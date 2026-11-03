@@ -1,0 +1,21 @@
+# environments / secrets
+.venv/
+.venv-lab/
+.env
+__pycache__/
+.ipynb_checkpoints/
+
+# MLflow state
+mlflow.db
+mlflow.db.bak*
+mlruns/
+mlflow_ui.log
+.mlflow_ui.pid
+
+# run outputs and report: generated in the lab, never committed
+outputs/
+screenshots/
+report/
+*.csv
+llmops_assignment2.html
+*.zip
