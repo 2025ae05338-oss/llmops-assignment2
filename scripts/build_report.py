@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 
 import markdown
+import pandas as pd
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,18 @@ args = ap.parse_args()
 
 s = json.loads((ROOT / "outputs" / "run_summary.json").read_text(encoding="utf-8"))
 t1, env = s["task1_stats"], s["environment"]
+
+# If latency barely tracks output length (e.g. slow lab network or free-tier queueing), say so in Task 1.
+calls = pd.concat([pd.read_csv(ROOT / "latency_tokens_cost.csv"), pd.read_csv(ROOT / "outputs" / "prompt_responses_detail.csv")])
+calls = calls[calls["output_tokens"] > 0]
+corr = calls["latency_seconds"].corr(calls["output_tokens"])
+latency_note = ""
+if len(calls) >= 5 and corr < 0.5:
+    retried = int((calls["attempts"] > 1).sum())
+    retry_txt = "no retries" if not retried else f"{retried} retried"
+    latency_note = (f"\n\n**Run note:** latency barely tracked output length (r = {corr:.2f}, {len(calls)} calls, {retry_txt}): "
+                    f"network/proxy overhead and free-tier queueing dominated, not generation.")
+
 where = f" on {args.where}" if args.where else ""
 
 task1_rows = "\n".join(f"| {r['qid']} | {r['input_tokens']} | {r['output_tokens']} | {r['total_tokens']} | "
@@ -51,11 +64,10 @@ md = f"""# LLMOps: API Cost, Latency, and Prompt Version Management
 
 **Course:** MLOps, Experiential Learning Assignment 2 | **Student:** {args.student} | **Run:** {s['run_date']}{where}
 
-**Setup:** Google Gemini Developer API (`{s['api_version']}`, `google-genai` {env['google_genai']}), model **`{s['model']}`**. Pricing: **USD {s['price_input_per_m']:.2f} per 1M input tokens and USD {s['price_output_per_m']:.2f} per 1M output tokens** (paid-tier Standard rate, published price as of {s['pricing_date']}). Free tier was used (actual spend USD 0); costs are at paid-tier rates. Python {env['python']} on {env['os']}, MLflow {env['mlflow']} (SQLite). The key came from the `GEMINI_API_KEY` environment variable.
-
+**Setup:** Google Gemini Developer API (`{s['api_version']}`, `google-genai` {env['google_genai']}), model **`{s['model']}`**. Pricing: **USD {s['price_input_per_m']:.2f} per 1M input tokens and USD {s['price_output_per_m']:.2f} per 1M output tokens** (paid-tier Standard rate, published price as of {s['pricing_date']}). Free tier was used (actual spend USD 0); costs are at paid-tier rates. Python {env['python']} on {env['os']}, MLflow {env['mlflow']} (SQLite).
 ## 1. LLMOps vs MLOps
 
-MLOps versions models trained from data. LLMOps calls hosted models whose prompt, model version, context and guardrails change independently, and adds token billing, output-length-driven latency and non-determinism, so prompts are versioned and evaluated like model artefacts.
+MLOps versions trained models. LLMOps calls hosted models whose prompt, model, context and guardrails change independently, adding token billing, output-driven latency and non-determinism, so prompts are versioned and evaluated like model artefacts.
 
 ## 2. Task 1: Latency (prompt v1, five questions)
 
@@ -65,7 +77,7 @@ MLOps versions models trained from data. LLMOps calls hosted models whose prompt
 
 ![Task 1 latency](../outputs/task1_latency.png)
 
-{s['task1_text']}
+{s['task1_text']}{latency_note}
 
 ## 3. Task 2: Tokens and cost
 
@@ -77,7 +89,7 @@ MLOps versions models trained from data. LLMOps calls hosted models whose prompt
 
 ## 4. Task 3: Prompt versioning and evaluation in MLflow
 
-The three prompts were registered as `eduassist_qa` versions with commit messages and run on the same five questions in experiment `eduassist_llmops_assignment`. Each run logged the five required metrics and was linked to its prompt version.
+Prompts were registered as `eduassist_qa` versions with commit messages; each ran on the same five questions as a linked run in `eduassist_llmops_assignment`.
 
 | Prompt Version | Avg Latency | Avg Input Tokens | Avg Output Tokens | Avg Cost | Valid JSON Rate | Recommended? |
 |---|---|---|---|---|---|---|
