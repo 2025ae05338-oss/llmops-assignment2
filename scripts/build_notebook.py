@@ -265,7 +265,7 @@ TASK1_TEXT = (
     f"**{slow.qid} at {slow.latency_seconds:.2f} s ({slow.latency_seconds / lat.mean():.2f}× the mean)**.\n\n"
     + "\n".join(f"- {r}" for r in reasons)
     + f"\n\nInput length is not the cause, because every prompt was {task1.input_tokens.min()}-{task1.input_tokens.max()} "
-      f"tokens and input is processed in parallel. Latency follows output length, and single calls are noisy. "
+      f"tokens and input is processed in parallel. Output length usually drives generation time, but single calls are noisy."
       f"So latency targets in production should use percentiles (p50/p95) over many requests, not single calls."
 )
 display(Markdown(TASK1_TEXT))
@@ -546,8 +546,11 @@ JUSTIFICATION = (
     + ". The separate `answer` and `key_points` fields also suit revision-style study.\n"
     f"- **Latency.** {best.prompt_version} averaged {b.avg_latency_seconds:.2f} s, against "
     + " and ".join(f"{S.loc[v].avg_latency_seconds:.2f} s for {v}" for v in others_v)
-    + ". It is faster because it generates far fewer tokens.\n"
-    f"- **Tokens.** It uses {b.avg_input_tokens:.0f} input tokens, against {base.avg_input_tokens:.0f} for v1, because the "
+    + (". It is faster because it generates far fewer tokens.\n" if b.avg_latency_seconds <= S.avg_latency_seconds.min()
+       else f". It is not the fastest here, but the gap is small next to the {details.latency_seconds.min():.0f}-"
+            f"{details.latency_seconds.max():.0f} s spread between individual calls: in this run network and queueing, "
+            f"not output length, dominated latency.\n")
+    + f"- **Tokens.** It uses {b.avg_input_tokens:.0f} input tokens, against {base.avg_input_tokens:.0f} for v1, because the "
     f"schema is part of the prompt. But it generates {b.avg_output_tokens:.0f} output tokens against "
     f"{base.avg_output_tokens:.0f} for v1 ({1 - b.avg_output_tokens / base.avg_output_tokens:.0%} fewer), and output is "
     f"the side that drives cost.\n"
