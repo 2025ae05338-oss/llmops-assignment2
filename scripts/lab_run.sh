@@ -47,7 +47,7 @@ setup() {
 import os
 from dotenv import load_dotenv
 from google import genai
-load_dotenv()
+load_dotenv(".env")
 r = genai.Client(api_key=os.environ["GEMINI_API_KEY"]).models.generate_content(
     model=os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite"), contents="Reply with OK")
 print("  API check:", r.text.strip()[:20], "| tokens in/out:", r.usage_metadata.prompt_token_count, r.usage_metadata.candidates_token_count)
