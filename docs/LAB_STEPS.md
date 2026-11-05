@@ -5,7 +5,7 @@ Total time is about 15 minutes; most of it is `pip install`. The notebook makes 
 ## 0. Get the code into the lab VM
 ```bash
 cd ~/Documents
-git clone https://github.com/karthikchundi-commits/llmops-assignment2.git
+git clone https://github.com/2025ae05338-oss/llmops-assignment2.git
 cd llmops-assignment2
 ```
 
