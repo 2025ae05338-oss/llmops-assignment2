@@ -39,4 +39,4 @@ bash scripts/lab_run.sh report && bash scripts/lab_run.sh package
 bash scripts/lab_run.sh stop
 rm .env          # do not leave the key on the shared VM
 ```
-Submit `MLOps_Assignment2_Karthik_Chundi.zip`. Upload it to Drive or email it to yourself from the lab browser.
+Submit `MLOps_Assignment2_Chodavarapu_VenkataHemalatha.zip`. Upload it to Drive or email it to yourself from the lab browser.
