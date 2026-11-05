@@ -20,7 +20,7 @@ mkdir -p ~/bin && ln -sf /usr/bin/python3.11 ~/bin/python3 && export PATH=~/bin:
 bash scripts/lab_run.sh all
 ```
 - The script asks once for **GEMINI_API_KEY** with hidden input and saves it to `.env` (mode 600). Paste the **new, rotated** key.
-- Steps it runs: venv → deps → API check → fresh MLflow DB → execute notebook → HTML export → MLflow UI on :5000 → 10 screenshots → `report/report.pdf` → `MLOps_Assignment2_Karthik_Chundi.zip`.
+- Steps it runs: venv → deps → API check → fresh MLflow DB → execute notebook → HTML export → MLflow UI on :5000 → 10 screenshots → `report/report.pdf` → `MLOps_Assignment2_Chodavarapu_VenkataHemalatha.zip`.
 - Re-run a single step with `bash scripts/lab_run.sh run|shots|report|package`.
 
 ## 3. Manual lab screenshots (proof the run happened in the lab)
