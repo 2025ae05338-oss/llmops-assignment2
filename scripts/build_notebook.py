@@ -23,7 +23,7 @@ md(r"""
 # Experiential Learning Assignment 2: LLMOps
 ## API Cost, Latency, and Prompt Version Management (EduAssist AI)
 
-**Course:** MLOps | **Student:** Karthik Chundi | **Mode:** Individual
+**Course:** MLOps | **StudentId:** 2025AE05338 | **Student:** Chodavarapu Venkata Hemalatha | **Mode:** Individual
 
 This notebook does three things:
 
