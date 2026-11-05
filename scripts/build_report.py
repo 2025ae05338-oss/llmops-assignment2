@@ -1,6 +1,6 @@
 """Build report/report.md and report/report.pdf from outputs/run_summary.json (written by the notebook).
 
-    python scripts/build_report.py [--student "Karthik Chundi"] [--where "BITS lab VM"]
+    python scripts/build_report.py [--student "Chodavarapu Venkata Hemalatha"] [--where "BITS lab VM"]
 """
 import argparse
 import json
