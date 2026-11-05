@@ -91,7 +91,7 @@ report() {
 }
 
 package() {
-  local ZIP="MLOps_Assignment2_${STUDENT_TAG:-Karthik_Chundi}.zip" STAGE; STAGE=$(mktemp -d)
+  local ZIP="MLOps_Assignment2_${STUDENT_TAG:-Chodavarapu_Venkata_Hemalatha}.zip" STAGE; STAGE=$(mktemp -d)
   mkdir -p "$STAGE/llmops-assignment2"
   cp -r llmops_assignment2.ipynb llmops_assignment2.html requirements.txt README.md .env.example .gitignore \
         latency_tokens_cost.csv prompt_evaluation_results.csv outputs screenshots report scripts docs "$STAGE/llmops-assignment2/"
